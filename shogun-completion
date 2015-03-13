@@ -1,6 +1,26 @@
 #
 _shogun() {
-	COMPREPLY=(
+    local cur prev
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    case "$prev" in
+	kamakura)
+	    COMPREPLY=(
+		源頼朝
+		源頼家
+		源実朝
+		藤原頼経
+		藤原頼嗣
+		宗尊親王
+		惟康親王
+		久明親王
+		守邦親王
+	    )
+	    ;;
+	*)
+	    COMPREPLY=(
 		徳川家康
 		徳川秀忠
 		徳川家光
@@ -16,7 +36,11 @@ _shogun() {
 		徳川家定
 		徳川家茂
 		徳川慶喜
-	)
+	    )
+	    return 0
+	    ;;
+    esac;
+
 }
 
 complete -F _shogun shogun
