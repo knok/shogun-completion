@@ -44,17 +44,33 @@ func main() {
 	first := os.Args[1]
 	val, ok := tokugawa[first]
 	if ok {
-		var dai string
-		dai = fmt.Sprintf("%dth", val)
-		if val == 1 || val == 11 {
-			dai = fmt.Sprintf("%dst", val)
-		} else if val == 2 || val == 12 {
-			dai =fmt.Sprintf("%dnd",val)
-		} else if val == 3 || val == 13 {
-			dai = fmt.Sprintf("%drd", val)
-		}
+		dai := Dai(val)
 		fmt.Printf("%s (the %s Shogun)\n", first, dai)
 		os.Exit(0)
+	} else if first == "kamakura" {
+		if len(os.Args) < 2 {
+			os.Exit(1)
+		}
+		second := os.Args[2]
+		val, ok := kamakura[second]
+		dai := Dai(val)
+		if ok {
+			fmt.Printf("%s (the %s Shogun)\n", second, dai)
+			os.Exit(0)
+		}
 	}
 	os.Exit(2)
+}
+
+func Dai(num int) string {
+	var suffix = "th"
+	x := num % 10
+	if x == 1 {
+		suffix = "st"
+	} else if x == 2 {
+		suffix = "nd"
+	} else if x == 3 {
+		suffix = "rd"
+	}
+	return fmt.Sprintf("%d%s", num, suffix)
 }
