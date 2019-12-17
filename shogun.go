@@ -10,6 +10,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -76,36 +77,42 @@ func Dai(num int) string {
 	return fmt.Sprintf("%d%s", num, suffix)
 }
 
-func run() int {
-	if len(os.Args) <= 1 {
+var (
+	stdout io.Writer = os.Stdout
+	stderr io.Writer = os.Stderr
+)
+
+func run(args []string) int {
+	if len(args) == 0 {
 		return 1
 	}
-	first := os.Args[1]
+	first := args[0]
 	second := ""
 	var fn func(string) (string, error)
 
 	if first == "kamakura" {
-		if len(os.Args) != 3 {
+		if len(args) != 2 {
 			return 1
 		}
-		second = os.Args[2]
+		second = args[1]
 		fn = Kamakura
 	} else {
-		if len(os.Args) != 2 {
+		if len(args) != 1 {
 			return 1
 		}
-		second = os.Args[1]
+		second = args[0]
 		fn = Tokugawa
 	}
 
 	result, err := fn(second)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(stderr, err)
+		return 2
 	}
-	fmt.Println(result)
+	fmt.Fprintln(stdout, result)
 	return 0
 }
 
 func main() {
-	os.Exit(run())
+	os.Exit(run(os.Args[1:]))
 }
