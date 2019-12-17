@@ -45,29 +45,22 @@ var (
 	}
 )
 
-func main() {
-	if len(os.Args) <= 1 {
-		os.Exit(1)
+func Tokugawa(name string) (string, error) {
+	val, ok := tokugawa[name]
+	if !ok {
+		return "", fmt.Errorf("そんな将軍はいない: %v", name)
 	}
-	first := os.Args[1]
-	val, ok := tokugawa[first]
-	if ok {
-		dai := Dai(val)
-		fmt.Printf("%s (the %s Shogun)\n", first, dai)
-		os.Exit(0)
-	} else if first == "kamakura" {
-		if len(os.Args) < 2 {
-			os.Exit(1)
-		}
-		second := os.Args[2]
-		val, ok := kamakura[second]
-		dai := Dai(val)
-		if ok {
-			fmt.Printf("%s (the %s Shogun)\n", second, dai)
-			os.Exit(0)
-		}
+	dai := Dai(val)
+	return fmt.Sprintf("%s (the %s Shogun)", name, dai), nil
+}
+
+func Kamakura(name string) (string, error) {
+	val, ok := kamakura[name]
+	if !ok {
+		return "", fmt.Errorf("そんな将軍はいない: %v", name)
 	}
-	os.Exit(2)
+	dai := Dai(val)
+	return fmt.Sprintf("%s (the %s Shogun)", name, dai), nil
 }
 
 func Dai(num int) string {
@@ -81,4 +74,38 @@ func Dai(num int) string {
 		suffix = "rd"
 	}
 	return fmt.Sprintf("%d%s", num, suffix)
+}
+
+func run() int {
+	if len(os.Args) <= 1 {
+		return 1
+	}
+	first := os.Args[1]
+	second := ""
+	var fn func(string) (string, error)
+
+	if first == "kamakura" {
+		if len(os.Args) != 3 {
+			return 1
+		}
+		second = os.Args[2]
+		fn = Kamakura
+	} else {
+		if len(os.Args) != 2 {
+			return 1
+		}
+		second = os.Args[1]
+		fn = Tokugawa
+	}
+
+	result, err := fn(second)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	fmt.Println(result)
+	return 0
+}
+
+func main() {
+	os.Exit(run())
 }
