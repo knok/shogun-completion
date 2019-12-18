@@ -1,15 +1,16 @@
-# shogun.go
-#
-# Copyright 2013, 2015 NOKUBI Takatsugu <knok@daionet.gr.jp>
-
-# Copying and distribution of this file, with or without modification,
-# are permitted in any medium without royalty provided the copyright
-# notice and this notice are preserved.  This file is offered as-is,
+// shogun.go
+//
+// Copyright 2013, 2015 NOKUBI Takatsugu <knok@daionet.gr.jp>
+//
+// Copying and distribution of this file, with or without modification,
+// are permitted in any medium without royalty provided the copyright
+// notice and this notice are preserved.  This file is offered as-is,
 
 package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -33,9 +34,9 @@ var (
 	}
 
 	kamakura = map[string]int{
-		"源頼朝": 1,
-		"源頼家": 2,
-		"源実朝": 3,
+		"源頼朝":  1,
+		"源頼家":  2,
+		"源実朝":  3,
 		"藤原頼経": 4,
 		"藤原頼嗣": 5,
 		"宗尊親王": 6,
@@ -43,31 +44,24 @@ var (
 		"久明親王": 8,
 		"守邦親王": 9,
 	}
-	)
+)
 
-func main() {
-	if len(os.Args) <= 1 {
-		os.Exit(1)
+func Tokugawa(name string) (string, error) {
+	val, ok := tokugawa[name]
+	if !ok {
+		return "", fmt.Errorf("そんな将軍はいない: %v", name)
 	}
-	first := os.Args[1]
-	val, ok := tokugawa[first]
-	if ok {
-		dai := Dai(val)
-		fmt.Printf("%s (the %s Shogun)\n", first, dai)
-		os.Exit(0)
-	} else if first == "kamakura" {
-		if len(os.Args) < 2 {
-			os.Exit(1)
-		}
-		second := os.Args[2]
-		val, ok := kamakura[second]
-		dai := Dai(val)
-		if ok {
-			fmt.Printf("%s (the %s Shogun)\n", second, dai)
-			os.Exit(0)
-		}
+	dai := Dai(val)
+	return fmt.Sprintf("%s (the %s Shogun)", name, dai), nil
+}
+
+func Kamakura(name string) (string, error) {
+	val, ok := kamakura[name]
+	if !ok {
+		return "", fmt.Errorf("そんな将軍はいない: %v", name)
 	}
-	os.Exit(2)
+	dai := Dai(val)
+	return fmt.Sprintf("%s (the %s Shogun)", name, dai), nil
 }
 
 func Dai(num int) string {
@@ -81,4 +75,44 @@ func Dai(num int) string {
 		suffix = "rd"
 	}
 	return fmt.Sprintf("%d%s", num, suffix)
+}
+
+var (
+	stdout io.Writer = os.Stdout
+	stderr io.Writer = os.Stderr
+)
+
+func run(args []string) int {
+	if len(args) == 0 {
+		return 1
+	}
+	first := args[0]
+	second := ""
+	var fn func(string) (string, error)
+
+	if first == "kamakura" {
+		if len(args) != 2 {
+			return 1
+		}
+		second = args[1]
+		fn = Kamakura
+	} else {
+		if len(args) != 1 {
+			return 1
+		}
+		second = args[0]
+		fn = Tokugawa
+	}
+
+	result, err := fn(second)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	fmt.Fprintln(stdout, result)
+	return 0
+}
+
+func main() {
+	os.Exit(run(os.Args[1:]))
 }
