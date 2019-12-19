@@ -34,7 +34,7 @@
 
 # license
 
-Copyright 2013, 2015 NOKUBI Takatsugu <knok@daionet.gr.jp>
+Copyright 2013, 2015, 2019 NOKUBI Takatsugu <knok@daionet.gr.jp>, mattn
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
@@ -42,6 +42,8 @@ notice and this notice are preserved.  This file is offered as-is,
 
 # ChangeLog
 
+* 2019/12/28
+    * 未定義将軍に対するエラー処理の追加 (by mattn, PR #1)
 * 2015/04/01
     * 鎌倉幕府対応
     * shogunコマンド実装
