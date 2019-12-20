@@ -40,10 +40,16 @@ Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.  This file is offered as-is,
 
+# fish実装 (by homulerさん)
+
+* https://gist.github.com/homuler/3d0842205cf121ad40f4797a6c0c492a
+* [本人のコメント](https://qiita.com/knok/items/3a08663895bb3a3d6fd0#comment-30a3a31581227bdfecf1)
+* [ツイート](https://twitter.com/eulerdora/status/1207719145556459520)
+
 # ChangeLog
 
 * 2019/12/28
-    * 未定義将軍に対するエラー処理の追加 (by mattn, PR #1)
+    * 未定義将軍に対するエラー処理の追加 (by mattnさん, PR #1)
 * 2015/04/01
     * 鎌倉幕府対応
     * shogunコマンド実装
